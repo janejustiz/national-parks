@@ -4,7 +4,7 @@ class NationalParks::Parks
   @@parks = []
 
   def initialize(park)
-    self.state = park.search("page-title").text.strip
+
     self.name = park.search("h3").text.strip
     self.url = "https://www.nps.gov#{park.search("a").attr("href").text.strip}index.htm"
     self.location = park.search("h4").text.strip
