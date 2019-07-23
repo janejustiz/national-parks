@@ -1,8 +1,6 @@
 # NationalParks
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/national_parks`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Welcome! This gem scrapes the National Park's website to tell you about the national parks in a particular state or territory.
 
 ## Installation
 
@@ -22,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+It allows you to enter a state or territory (in USPS Abbreviation form) and get a list of national parks in that state. If you are interested in learning more about a specific park, you enter it's number and you get a description of the park. If you are unsure of what state/territory you want to chose from or don't know the appropriate USPS Abbreviation, you can receive a list of options.
 
 ## Development
 
