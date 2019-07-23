@@ -1,6 +1,6 @@
-require "national_parks/version"
+require 'nokogiri'
+require 'pry'
 
-module NationalParks
-  class Error < StandardError; end
-  # Your code goes here...
-end
+require_relative "./national_parks/version"
+require_relative './national_parks/cli'
+require_relative './national_parks/parks'
