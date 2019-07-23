@@ -1,17 +1,23 @@
 class NationalParks::Parks
   attr_accessor :state, :name, :url, :location, :description
 
-  @@all = []
+  @@parks = []
 
-  def initialize(abbreviation)
-    self.scrape(abbreviation)
-
+  def initialize(park)
+    self.state = park.search("page-title").text.strip
+    self.name = park.search("h3").text.strip
+    self.url = "https://www.nps.gov#{park.search("a").attr("href").text.strip}index.htm"
+    self.location = park.search("h4").text.strip
+    self.description = park.search("p").text.strip
+    @@parks << self
   end
 
-  def self.scrape(abbreviation)
-
+  def self.parks
+    @@parks
   end
 
-
+  def self.empty
+    self.parks.clear
+  end
 
 end
