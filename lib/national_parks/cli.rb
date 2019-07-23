@@ -1,34 +1,36 @@
 class NationalParks::CLI
+  ENTRIES = ["al", "ak", "az", "ar", "ca", "co", "ct", "de", "fl", "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me", "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy", "dc", "as", "gu", "pr", "vi", "mp"]
 
   def call
     puts "National Parks in the United States"
-    intro
-    answer
+    again
     done
   end
 
   def intro
     puts "To see the national parks within a state/territory, please enter the state/territory's USPS abbreviation (ex: 'FL')."
     puts "To see a list of states, enter 'states'. To see a list of territories, enter 'territories'."
-    puts "To exit, enter 'exit'"
+    puts "To exit, enter 'exit'."
   end
 
   def answer
-    input = nil
-    while input != "exit"
-      input = gets.strip.downcase
-      if input == "states"
-        states
-        intro
-      elsif input == "territories"
-        territories
-        intro
-      else
-        scrape(input)
-        print_states
-        intro
-      end
+    input = gets.strip.downcase
+    if input == "exit"
+    elsif input == "states"
+      states
+      again
+    elsif input == "territories"
+      territories
+      again
+    else
+      evaluation(input)
+      again
     end
+  end
+
+  def again
+    intro
+    answer
   end
 
   def states
@@ -54,17 +56,43 @@ class NationalParks::CLI
 
   def scrape(input)
     NationalParks::Parks.empty
-    doc = Nokogiri::HTML(open("https://www.nps.gov/state/#{input}/index.htm"))
-    doc.search(".clearfix").each do |park|
+    @doc = Nokogiri::HTML(open("https://www.nps.gov/state/#{input}/index.htm"))
+    @doc.search(".clearfix").each do |park|
       NationalParks::Parks.new(park)
     end
     NationalParks::Parks.parks.pop(2)
   end
 
-  def print_states
-    puts NationalParks::Parks.parks[0].state
+  def print_parks
+    puts "National Parks in #{@doc.search("h1").text}"
     NationalParks::Parks.parks.each.with_index(1) do |park, i|
       puts "#{i}. #{park.name} - #{park.location}"
+    end
+  end
+
+  def valid(input)
+    true if ENTRIES.include?(input)
+  end
+
+  def evaluation(input)
+    if valid(input) == true
+      scrape(input)
+      print_parks
+      park_description
+    else
+      puts "Invalid Entry. Try again."
+    end
+  end
+
+  def park_description
+    puts "To learn more about a specific park, enter it's number. Otherwise, enter 'return'."
+    entry = gets.strip
+    if ((entry.to_i > 0) && (entry.to_i <= NationalParks::Parks.parks.size))
+      puts NationalParks::Parks.parks[entry.to_i - 1].description
+      park_description
+    elsif entry == "return"
+    else
+      puts "Invalid Entry."
     end
   end
 

@@ -1,10 +1,9 @@
 class NationalParks::Parks
-  attr_accessor :state, :name, :url, :location, :description
+  attr_accessor :name, :url, :location, :description
 
   @@parks = []
 
   def initialize(park)
-
     self.name = park.search("h3").text.strip
     self.url = "https://www.nps.gov#{park.search("a").attr("href").text.strip}index.htm"
     self.location = park.search("h4").text.strip
