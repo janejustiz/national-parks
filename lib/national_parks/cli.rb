@@ -1,7 +1,9 @@
 class NationalParks::CLI
-  ENTRIES = ["al", "ak", "az", "ar", "ca", "co", "ct", "de", "fl", "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me", "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy", "dc", "as", "gu", "pr", "vi", "mp"]
+  @states = []
 
   def call
+    @states = NationalParks::States.new.states
+    puts @states
     puts "National Parks in the United States"
     again
     done
@@ -71,7 +73,7 @@ class NationalParks::CLI
   end
 
   def valid(input)
-    true if ENTRIES.include?(input)
+    true if @states.include?(input)
   end
 
   def evaluation(input)
