@@ -1,5 +1,5 @@
 class NationalParks::Parks
-  attr_accessor :name, :url, :location, :description
+  attr_accessor :state, :name, :url, :location, :description
 
   @@parks = []
 
@@ -13,10 +13,6 @@ class NationalParks::Parks
 
   def self.parks
     @@parks
-  end
-
-  def self.empty
-    self.parks.clear
   end
 
 end

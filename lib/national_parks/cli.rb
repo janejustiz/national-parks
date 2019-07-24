@@ -1,31 +1,28 @@
 class NationalParks::CLI
-  @states = []
 
   def call
-    @states = NationalParks::States.new.states
-    puts @states
+    NationalParks::Scraper.new
+    @states = NationalParks::States.states
+    @parks = NationalParks::Parks.parks
     puts "National Parks in the United States"
     again
     done
   end
 
   def intro
-    puts "To see the national parks within a state/territory, please enter the state/territory's USPS abbreviation (ex: 'FL')."
-    puts "To see a list of states, enter 'states'. To see a list of territories, enter 'territories'."
+    puts "To see the national parks within a state/territory, please enter a state/territory."
+    puts "To see a list of states/territories, enter 'list'."
     puts "To exit, enter 'exit'."
   end
 
   def answer
-    input = gets.strip.downcase
-    if input == "exit"
-    elsif input == "states"
-      states
-      again
-    elsif input == "territories"
-      territories
+    @input = gets.strip.downcase
+    if @input == "exit"
+    elsif @input == "list"
+      list
       again
     else
-      evaluation(input)
+      evaluation
       again
     end
   end
@@ -35,19 +32,10 @@ class NationalParks::CLI
     answer
   end
 
-  def states
-    puts "US States + US Capital:"
-    states = ["Alabama - AL", "Alaska - AK", "Arizona - AZ", "Arkansas - AR", "California - CA", "Colorado - CO", "Connecticut - CT", "Delware - DE", "Florida - FL", "Georgia - GA", "Hawaii - HI", "Idaho - ID", "Illanois - IL", "Indiana - IN", "Iowa - IA", "Kansas - KS", "Kentucky - KY", "Louisiana - LA", "Maine - ME", "Maryland - MD", "Massachusetts - MA", "Michigan - MI", "Minnesota - MN", "Mississippi - MS", "Missouri - MO", "Montana - MT", "Nebraska - NE", "Nevada - NV", "New Hampshire - NH", "New Jersey - NJ", "New Mexico - NM", "New York - NY", "North Carolina - NC", "North Dakota - ND", "Ohio - OH", "Oklahoma - OK", "Oregon - OR", "Pennsylvania - PA", "Rhode Island - RI", "South Carolina - SC", "South Dakota - SD", "Tennessee - TN", "Texas - TX", "Utah - UT", "Vermont - VT", "Virginia - VA", "Washington - WA", "West Virginia - WV", "Wisconsin - WI", "Wyoming - WY", "Washington, D.C. - DC"]
-    states.each.with_index(1) do |s, i|
+  def list
+    puts "US States, Capital, and Territories:"
+    @states.name.each.with_index(1) do |s, i|
       puts "#{i}. #{s}"
-    end
-  end
-
-  def territories
-    territories = ["American Samoa - AS", "Guam - GU", "Puerto Rico - PR", "Virgin Islands - VI", "Northern Mariana Islands - MP"]
-    puts "US Territories:"
-    territories.each.with_index(1) do |t, i|
-      puts "#{i}. #{t}"
     end
   end
 
@@ -56,29 +44,8 @@ class NationalParks::CLI
     puts "Have a nice day!"
   end
 
-  def scrape(input)
-    NationalParks::Parks.empty
-    @doc = Nokogiri::HTML(open("https://www.nps.gov/state/#{input}/index.htm"))
-    @doc.search(".clearfix").each do |park|
-      NationalParks::Parks.new(park)
-    end
-    NationalParks::Parks.parks.pop(2)
-  end
-
-  def print_parks
-    puts "National Parks in #{@doc.search("h1").text}"
-    NationalParks::Parks.parks.each.with_index(1) do |park, i|
-      puts "#{i}. #{park.name} - #{park.location}"
-    end
-  end
-
-  def valid(input)
-    true if @states.include?(input)
-  end
-
-  def evaluation(input)
-    if valid(input) == true
-      scrape(input)
+  def evaluation
+    if valid == true
       print_parks
       park_description
     else
@@ -86,13 +53,25 @@ class NationalParks::CLI
     end
   end
 
+  def valid
+    true if @states.value.include?(@input)
+  end
+
+  def print_parks
+    puts "National Parks in #{@input.name}"
+    @input.parks.each.with_index(1) do |park, i|
+      puts "#{i}. #{park.name} - #{park.location}"
+    end
+  end
+
   def park_description
-    puts "To learn more about a specific park, enter it's number. Otherwise, enter 'return'."
+    puts "To learn more about a specific park, enter it's number. Otherwise, enter 'exit'."
     entry = gets.strip
-    if ((entry.to_i > 0) && (entry.to_i <= NationalParks::Parks.parks.size))
-      puts NationalParks::Parks.parks[entry.to_i - 1].description
+    if ((entry.to_i > 0) && (entry.to_i <= @input.parks.size))
+      puts @input.parks[entry.to_i - 1].url
+      puts @input.parks[entry.to_i - 1].description
       park_description
-    elsif entry == "return"
+    elsif entry == "exit"
     else
       puts "Invalid Entry."
     end

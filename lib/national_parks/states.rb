@@ -1,15 +1,21 @@
 class NationalParks::States
-  @states = []
+  attr_accessor :name, :value, :parks
 
-  def initialize
-    Nokogiri::HTML(open("https://www.nps.gov/findapark/index.htm")).css("#state option").each do |park|
-      @states << park.attr('value')
-    end
-    @states.shift
+  @@states = []
+
+  def initialize(name, value)
+    self.name = name
+    self.value = value
+    @parks = []
+    @@states << self
   end
 
-  def states
-    @states
+  def self.states
+    @@states
+  end
+
+  def parks
+    @parks
   end
 
 end
