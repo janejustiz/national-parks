@@ -18,7 +18,7 @@ class NationalParks::Scraper
   def scrape_parks(input, a)
     array = []
     array = Nokogiri::HTML(open("https://www.nps.gov/state/#{input}/index.htm")).search(".clearfix")
-    array.pop(2)
+    array.pop
     array.each do |park|
       b = NationalParks::Parks.new(park)
       a.parks << b

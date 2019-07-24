@@ -10,15 +10,16 @@ class NationalParks::CLI
   end
 
   def intro
-    puts "To see the national parks within a state/territory, please enter a state/territory."
+    puts "To see the national parks within a state/territory, please enter a state/territory (ex: 'Florida')."
     puts "To see a list of states/territories, enter 'list'."
     puts "To exit, enter 'exit'."
   end
 
   def answer
     @input = gets.strip.downcase
-    if @input == "exit"
-    elsif @input == "list"
+    case @input
+    when "exit"
+    when "list"
       list
       again
     else
@@ -34,14 +35,13 @@ class NationalParks::CLI
 
   def list
     puts "US States, Capital, and Territories:"
-    @states.name.each.with_index(1) do |s, i|
-      puts "#{i}. #{s}"
+    @states.each.with_index(1) do |s, i|
+      puts "#{i}. #{s.name}"
     end
   end
 
   def done
-    puts "Thank you for using my gem!"
-    puts "Have a nice day!"
+    puts "Bye! Have a nice day!"
   end
 
   def evaluation
@@ -54,11 +54,11 @@ class NationalParks::CLI
   end
 
   def valid
-    true if @states.value.include?(@input)
+    true if @states.select {|a| a.name.include?(@input)}
   end
 
   def print_parks
-    puts "National Parks in #{@input.name}"
+    puts "National Parks in #{@input.capitalize}"
     @input.parks.each.with_index(1) do |park, i|
       puts "#{i}. #{park.name} - #{park.location}"
     end
