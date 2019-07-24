@@ -10,7 +10,7 @@ class NationalParks::Scraper
     array.shift
     array.each do |state|
       value = state.attr('value')
-      a = NationalParks::States.new(state.text, value)
+      a = NationalParks::States.new(state.text.strip, value.strip)
       scrape_parks(value, a)
     end
   end
@@ -18,6 +18,7 @@ class NationalParks::Scraper
   def scrape_parks(input, a)
     array = []
     array = Nokogiri::HTML(open("https://www.nps.gov/state/#{input}/index.htm")).search(".clearfix")
+    array.pop
     array.pop
     array.each do |park|
       b = NationalParks::Parks.new(park)
