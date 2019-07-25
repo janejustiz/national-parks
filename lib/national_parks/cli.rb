@@ -1,5 +1,7 @@
 class NationalParks::CLI
 
+  @@scraped = []
+
   def call
     NationalParks::Scraper.new
     @states = NationalParks::States.states
@@ -17,9 +19,10 @@ class NationalParks::CLI
 
   def answer
     @input = gets.strip
+    @input = @input.split.map(&:capitalize).join(' ')
     case @input
-    when "exit"
-    when "list"
+    when "Exit"
+    when "List"
       list
       again
     else
@@ -46,6 +49,7 @@ class NationalParks::CLI
 
   def evaluation
     if valid == true
+      find
       print_parks
       park_description
     else
@@ -54,14 +58,22 @@ class NationalParks::CLI
   end
 
   def valid
-    if @states.detect{|a| a.name == @input.capitalize} != nil
-      @object = @states.detect{|a| a.name == @input.capitalize}
+    @object = ""
+    if @states.detect{|a| a.name == @input} != nil
+      @object = @states.detect{|a| a.name == @input}
     true
     end
   end
 
+  def find
+    if @@scraped.detect{|a| a == @object} == nil
+      NationalParks::Scraper.scrape_parks(@object.value, @object)
+      @@scraped << @object
+    end
+  end
+
   def print_parks
-    puts "National Parks in #{@input.capitalize}"
+    puts "National Parks in #{@input}"
     @object.parks.each.with_index(1) do |park, i|
       puts "#{i}. #{park.name} - #{park.location}"
     end
