@@ -82,11 +82,12 @@ class NationalParks::CLI
   def park_description
     puts "To learn more about a specific park, enter it's number. Otherwise, enter 'exit'."
     entry = gets.strip
+    entry.capitalize!
     if ((entry.to_i > 0) && (entry.to_i <= @object.parks.size))
       puts "URL: #{@object.parks[entry.to_i - 1].url}"
       puts "Description: #{@object.parks[entry.to_i - 1].description}"
       park_description
-    elsif entry == "exit"
+    elsif entry == "Exit"
     else
       puts "Invalid Entry."
     end
