@@ -10,7 +10,11 @@ class NationalParks::Scraper
     array.shift
     array.each do |state|
       value = state.attr('value')
-      NationalParks::States.new(state.text.strip, value.strip)
+      if state.text == "District of Columbia"
+        NationalParks::States.new("District Of Columbia", value.strip)
+      else
+        NationalParks::States.new(state.text.strip, value.strip)
+      end
     end
   end
 
